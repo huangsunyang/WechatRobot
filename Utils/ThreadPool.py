@@ -2,6 +2,7 @@ import threading
 import multiprocessing
 import Queue
 import time
+import sys
 from Utils.Timer import time_manager
 
 
@@ -45,15 +46,13 @@ class ThreadPool:
                 if name is not None:
                     self._run_task(name)
             self._check_timeout_tasks()
-            time.sleep(1)
-            print "queue thread is running"
+            time.sleep(0.2)
 
     def _check_timeout_tasks(self):
         for i in range(self.thread_limit):
             task = self.tasks[i]
             if task is not None:
                 if task.time_limit < time.time():
-                    self.remove_task(i)
                     print "task time out"
 
 

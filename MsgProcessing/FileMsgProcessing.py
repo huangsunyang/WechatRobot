@@ -1,13 +1,12 @@
-#coding=utf8
+from StaticValues import temp_msgs_cache
+from MsgProcessing.PictureMsgProcessing import deal_with_picture
+from itchat.content import *
 
-import itchat
 import os
 import re
-from itchat.content import *
-from StaticValues import temp_msgs_cache
 
 
-def deal_with_picture(msg):
+def deal_with_file(msg):
     file_name = msg.fileName
     search_result = re.search('md5=\"(.*?)\"', msg['Content'])
 
@@ -21,4 +20,4 @@ def deal_with_picture(msg):
         msg.download(msg.fileName)
         os.rename(msg.fileName, md5)
 
-    temp_msgs_cache[msg['MsgId']] = (PICTURE, md5)
+    temp_msgs_cache[msg['MsgId']] = (ATTACHMENT, md5)

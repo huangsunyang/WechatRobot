@@ -9,9 +9,19 @@ class Debug:
 
     @staticmethod
     def log_msg_neatly(msg):
-        key_list = ["ActualNickName", "FromUserName", "ToUserName", "CreateTime", "MsgId", "Content"]
+        key_list = ["ActualNickName", "FromUserName", "ToUserName", "CreateTime", "MsgId", "Content",
+                    "Type", "Text", "MsgType", "SubMsgType"]
+
+        longest_key_len = len(max(key_list, key=len))
+
+        print "+------------------------------------+"
         for key in key_list:
-            print key, msg[key]
+            print key, Debug.spaces(longest_key_len - len(key)), msg[key]
+        print "+------------------------------------+"
+
+    @staticmethod
+    def spaces(num):
+        return ' ' * num
 
 
 if __name__ == '__main__':

@@ -1,13 +1,14 @@
-#coding=utf8
+# coding=UTF-8
 
-import itchat
 import os
 import re
+
 from itchat.content import *
 from StaticValues import temp_msgs_cache
+from MsgProcessing.PictureMsgProcessing import deal_with_picture
 
 
-def deal_with_picture(msg):
+def deal_with_voice(msg):
     file_name = msg.fileName
     search_result = re.search('md5=\"(.*?)\"', msg['Content'])
 
@@ -21,4 +22,4 @@ def deal_with_picture(msg):
         msg.download(msg.fileName)
         os.rename(msg.fileName, md5)
 
-    temp_msgs_cache[msg['MsgId']] = (PICTURE, md5)
+    temp_msgs_cache[msg['MsgId']] = (VOICE, md5)

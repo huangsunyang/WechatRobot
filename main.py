@@ -7,6 +7,9 @@ from itchat.content import *
 from MsgProcessing import TextMsgProcessing
 from MsgProcessing import NoteMsgProcessing
 from MsgProcessing import PictureMsgProcessing
+from MsgProcessing import VoiceMsgProcessing
+from MsgProcessing import FileMsgProcessing
+from MsgProcessing import SystemMsgProcessing
 from StaticValues import caring_friends_list
 import StaticValues
 from Utils.Debug import Debug
@@ -19,6 +22,8 @@ def text_reply(msg):
 
     # only deal with message from certain friends
     if msg['ActualNickName'] not in caring_friends_list:
+        if msg['ActualNickName'] is None or len(msg['ActualNickName']) <= 0:
+            msg['ActualNickName'] = u"黄孙扬"
         return
 
     if msg['Type'] == TEXT:
@@ -30,6 +35,12 @@ def text_reply(msg):
     elif msg['Type'] == PICTURE:
         print msg
         PictureMsgProcessing.deal_with_picture(msg)
+    elif msg['Type'] == VOICE:
+        VoiceMsgProcessing.deal_with_voice(msg)
+    elif msg['Type'] == ATTACHMENT:
+        FileMsgProcessing.deal_with_file(msg)
+    elif msg['Type'] == SYSTEM:
+        SystemMsgProcessing.deal_with_system_event(msg)
     else:
         return
 
