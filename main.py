@@ -6,9 +6,11 @@ import time
 from itchat.content import *
 from MsgProcessing import TextMsgProcessing
 from MsgProcessing import NoteMsgProcessing
+from MsgProcessing import PictureMsgProcessing
 from StaticValues import caring_friends_list
 import StaticValues
 from Utils.Debug import Debug
+from Utils.ThreadPool import thread_pool
 
 
 @itchat.msg_register(INCOME_MSG, isGroupChat=True)
@@ -22,9 +24,12 @@ def text_reply(msg):
     if msg['Type'] == TEXT:
         TextMsgProcessing.deal_with_text(msg)
         reply_content = msg["Content"]
-    elif msg['Type'] == 'Note':
+    elif msg['Type'] == NOTE:
         NoteMsgProcessing.deal_with_note(msg)
         reply_content = u"通知"
+    elif msg['Type'] == PICTURE:
+        print msg
+        PictureMsgProcessing.deal_with_picture(msg)
     else:
         return
 
@@ -33,15 +38,15 @@ def text_reply(msg):
     if friend is None:
         return
 
-    itchat.send(u"Friend:%s -- %s\n"
-                u"Time:%s\n"
-                u" Message:%s" % (friend['NickName'], friend['RemarkName'], time.ctime(), reply_content),
-                toUserName='filehelper')
+    # itchat.send(u"Friend:%s -- %s\n"
+    #             u"Time:%s\n"
+    #             u" Message:%s" % (friend['NickName'], friend['RemarkName'], time.ctime(), reply_content),
+    #             toUserName='filehelper')
 
 
 if __name__ == '__main__':
-    itchat.auto_login()
+    itchat.auto_login(hotReload=True)
 
     StaticValues.self_user_id = itchat.search_friends(name=u"黄孙扬")[0]["UserName"]
 
-    itchat.run()
+    itchat.run(blockThread=False)

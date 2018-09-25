@@ -2,11 +2,16 @@
 
 from itchat.content import *
 from StaticValues import temp_msgs_cache
+from Utils.ThreadPool import thread_pool
+from Utils.Timer import time_manager
+
 import StaticValues
 import itchat
 import sys
 import StringIO
 import contextlib
+import traceback
+
 
 
 @contextlib.contextmanager
@@ -35,17 +40,30 @@ def deal_with_command(msg):
     command = msg["Content"]
     if command.startswith(u"$code"):
         code = command[6:]
-        output = None
+        thread_pool.add_task(python_code_func(code, msg), time_limit=5)
 
+
+def exec_code(code):
+    exec code
+
+
+def python_code_func(code, msg):
+    # the function on another thread
+    def ret_func():
         with stdoutIO() as s:
-            exec code
+            try:
+                exec_code(code)
+            except:
+                print traceback.format_exc()
 
-        print StaticValues.self_user_id
+        content = s.getvalue().decode('utf8')
 
         if msg['FromUserName'] != StaticValues.self_user_id:
-            itchat.send(s.getvalue().decode('utf8'), toUserName=msg['FromUserName'])
+            itchat.send(content, toUserName=msg['FromUserName'])
         else:
-            itchat.send(s.getvalue().decode('utf8'), toUserName=msg['ToUserName'])
+            itchat.send(content, toUserName=msg['ToUserName'])
+
+    return ret_func
 
 
 def is_command(msg):
