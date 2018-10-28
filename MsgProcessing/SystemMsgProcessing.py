@@ -4,7 +4,7 @@ import itchat
 import os
 import re
 from itchat.content import *
-from Utils.Chat import reply_msg_from_chatroom
+from Utils.Chat import Chat
 from StaticValues import temp_msgs_cache
 
 

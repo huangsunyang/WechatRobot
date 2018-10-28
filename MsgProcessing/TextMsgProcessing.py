@@ -16,7 +16,7 @@ import sys
 import StringIO
 import contextlib
 import traceback
-import Utils.Chat as Chat
+from Utils.Chat import Chat
 from Utils.Debug import Debug
 from TextLengthRecorder import TextLengthRecorder
 import functools
@@ -120,7 +120,7 @@ def python_code_func(msg, code):
                 print traceback.format_exc()
 
         content = s.getvalue().decode('utf8')
-        Chat.reply_msg_from_chatroom(msg, content)
+        Chat.reply_text_from_chatroom(msg, content)
 
     return ret_func
 
@@ -152,10 +152,10 @@ def deal_with_remind(msg):
     def remind_func():
         t = remind_time_since_now
         while t > 0:
-            Chat.reply_msg_from_chatroom(msg, str(t))
+            Chat.reply_text_from_chatroom(msg, str(t))
             time.sleep(1)
             t -= 1
-        Chat.reply_msg_from_chatroom(msg, remind_content)
+        Chat.reply_text_from_chatroom(msg, remind_content)
 
     thread_pool.add_task(remind_func)
 
@@ -167,5 +167,5 @@ def is_length_stat(msg):
 
 @run_at_condition(is_length_stat)
 def deal_with_msg_length_stat(msg):
-    stat = TextLengthRecorder.cur_hour_ouput_statistics()
-    Chat.reply_msg_from_chatroom(msg, stat)
+    image_name = TextLengthRecorder.cur_hour_output_stat_image()
+    Chat.reply_img_from_chatroom(msg, image_name)
